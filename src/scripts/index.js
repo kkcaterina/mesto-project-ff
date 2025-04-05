@@ -1,5 +1,6 @@
 import '../pages/index.css';
-import { initialCards, createCard, deleteCard, likeCard } from './cards';
+import { initialCards } from './cards.js';
+import { createCard, deleteCard, likeCard } from './card.js';
 import { openPopup, closePopup, closePopupButton, animatePopup } from './modal.js';
 
 const cardTemplate = document.querySelector('#card-template').content;
@@ -24,6 +25,10 @@ animatePopup(editPopup);
 animatePopup(addPopup);
 animatePopup(imagePopup);
 
+closePopupButton(editPopup);
+closePopupButton(addPopup);
+closePopupButton(imagePopup);
+
 initialCards.forEach(function (item) {
   placesContainer.append(createCard(item.name, item.link, deleteCard, likeCard, showPicture));
 });
@@ -32,19 +37,10 @@ editButton.addEventListener('click', function() {
   openPopup(editPopup);
   nameInput.value = nameProfile.textContent;
   jobInput.value = jobProfile.textContent;
-  closePopupButton(editPopup);
 });
 
 addButton.addEventListener('click', function() {
   openPopup(addPopup);
-  closePopupButton(addPopup);
-});
-
-placesContainer.addEventListener('click', function(evt) {
-  if (evt.target.classList.contains('card__image')) {
-    openPopup(imagePopup);
-    closePopupButton(imagePopup);
-  }
 });
 
 profileForm.addEventListener('submit', handleProfileFormSubmit);
@@ -69,6 +65,11 @@ function handlePlaceFormSubmit(evt) {
 }
 
 function showPicture(cardName, cardLink) {
+  placesContainer.addEventListener('click', function(evt) {
+    if (evt.target.classList.contains('card__image')) {
+      openPopup(imagePopup);
+    }
+  });
   popupImageCaption.textContent = cardName;
   popupImage.src = cardLink;
   popupImage.alt = cardName;
