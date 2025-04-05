@@ -35,7 +35,7 @@ function createCard(cardName, cardLink, deleteFunction, likeFunction, showPictur
   const cardImage = cardElement.querySelector('.card__image');
   deleteButton.addEventListener('click', deleteFunction);
   likeButton.addEventListener('click', likeFunction);
-  cardImage.addEventListener('click', showPictureFunction);
+  cardImage.addEventListener('click', () => showPictureFunction(cardName, cardLink));
   cardTitle.textContent = cardName;
   cardImage.src = cardLink;
   cardImage.alt = cardName;
@@ -53,13 +53,4 @@ function likeCard(evt) {
   eventTarget.classList.toggle('card__like-button_is-active');
 }
 
-function showPicture(evt) {
-  const eventTarget = evt.target;
-  const popupImage = document.querySelector('.popup__image');
-  const popupCaption = document.querySelector('.popup__caption');
-  popupCaption.textContent = eventTarget.alt;
-  popupImage.src = eventTarget.src;
-  popupImage.alt = eventTarget.alt;
-}
-
-export { initialCards, createCard, deleteCard, likeCard, showPicture };
+export { initialCards, createCard, deleteCard, likeCard };

@@ -1,6 +1,6 @@
 import '../pages/index.css';
-import { initialCards, createCard, deleteCard, likeCard, showPicture } from './cards';
-import { openPopup, closePopupButton, handleProfileFormSubmit, handlePlaceFormSubmit, animatePopup } from './modal.js';
+import { initialCards, createCard, deleteCard, likeCard } from './cards';
+import { openPopup, closePopup, closePopupButton, animatePopup } from './modal.js';
 
 const cardTemplate = document.querySelector('#card-template').content;
 const placesContainer = document.querySelector('.places__list');
@@ -12,9 +12,13 @@ const imagePopup = document.querySelector('.popup_type_image');
 const profileForm = document.forms.profile; 
 const nameInput = profileForm.elements.name;
 const jobInput = profileForm.elements.description;
+const nameProfile = document.querySelector('.profile__title');
+const jobProfile = document.querySelector('.profile__description');
 const newPlaceForm = document.forms.add;
 const placeInput = newPlaceForm.elements.place;
 const linkInput = newPlaceForm.elements.link;
+const popupImage = document.querySelector('.popup__image');
+const popupImageCaption = document.querySelector('.popup__caption');
 
 animatePopup(editPopup);
 animatePopup(addPopup);
@@ -26,8 +30,8 @@ initialCards.forEach(function (item) {
 
 editButton.addEventListener('click', function() {
   openPopup(editPopup);
-  nameInput.value = document.querySelector('.profile__title').textContent;
-  jobInput.value = document.querySelector('.profile__description').textContent;
+  nameInput.value = nameProfile.textContent;
+  jobInput.value = jobProfile.textContent;
   closePopupButton(editPopup);
 });
 
@@ -46,4 +50,28 @@ placesContainer.addEventListener('click', function(evt) {
 profileForm.addEventListener('submit', handleProfileFormSubmit);
 newPlaceForm.addEventListener('submit', handlePlaceFormSubmit);
 
-export { cardTemplate, nameInput, jobInput, placeInput, linkInput, newPlaceForm, editPopup, addPopup, placesContainer };
+function handleProfileFormSubmit(evt) {
+  evt.preventDefault();
+  const nameValue = nameInput.value;
+  const jobValue = jobInput.value;
+  nameProfile.textContent = nameValue;
+  jobProfile.textContent = jobValue;
+  closePopup(editPopup);
+}
+
+function handlePlaceFormSubmit(evt) {
+  evt.preventDefault();
+  const placeValue = placeInput.value;
+  const linkValue = linkInput.value;
+  placesContainer.prepend(createCard(placeValue, linkValue, deleteCard, likeCard, showPicture));
+  newPlaceForm.reset();
+  closePopup(addPopup);
+}
+
+function showPicture(cardName, cardLink) {
+  popupImageCaption.textContent = cardName;
+  popupImage.src = cardLink;
+  popupImage.alt = cardName;
+}
+
+export { cardTemplate };
