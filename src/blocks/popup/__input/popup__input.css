@@ -14,6 +14,20 @@
   margin-bottom: 0;
 }
 
+.popup__input_type_error { 
+  border-bottom: rgba(255, 0, 0, 1) 1px solid;
+} 
+
+.popup__input-error {
+  font-size: 12px;
+  color: rgba(255, 0, 0, 1);
+  opacity: 0;
+}
+
+.popup__error_visible {
+  opacity: 1;
+}
+
 @media screen and (max-width: 568px) {
   .popup__title {
     font-size: 12px;

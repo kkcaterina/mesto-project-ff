@@ -8,6 +8,24 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  cursor: pointer;
+}
+
+.profile__edit-image-button {
+  background: transparent url('../../../images/edit-icon.svg') center no-repeat;
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  background-size: 28px 28px;
+  background-color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.profile__image:hover .profile__edit-image-button {
+  visibility: visible;
 }
 
 @media screen and (max-width: 740px) {
