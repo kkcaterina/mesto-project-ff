@@ -49,13 +49,10 @@ closePopupButton(imagePopup);
 closePopupButton(avatarPopup);
 
 editButton.addEventListener('click', function() {
-  clearValidation(profileForm, validationSettings);
   openPopup(editPopup);
   nameInput.value = nameProfile.textContent;
   jobInput.value = jobProfile.textContent;
-  const buttonElement = profileForm.querySelector(validationSettings.submitButtonSelector);
-  buttonElement.disabled = false;
-  buttonElement.classList.remove(validationSettings.inactiveButtonClass);
+  clearValidation(profileForm, validationSettings);
 });
 
 addButton.addEventListener('click', function() {
@@ -78,9 +75,7 @@ Promise.all([getUser(config), getCards(config)])
     currentUser = user;
     showProfile();
     cardsArray.forEach(function (card) {
-      const isCardOfCurrentUser = (card.owner._id === currentUser._id);
-      const isCardLiked = card.likes.some(user => user._id === currentUser._id);
-      placesContainer.append(createCard(card.name, card.link, card.likes.length, isCardLiked, isCardOfCurrentUser, card, deleteCard, showPicture));
+      placesContainer.append(createCard(cardTemplate, card, user._id, deleteCard, showPicture));
     })
   })
   .catch((err) => {
@@ -97,11 +92,13 @@ function handleProfileFormSubmit(evt) {
     .then((data) => {
       nameProfile.textContent = data.name;
       jobProfile.textContent = data.about;
-      submitButton.textContent = submitButtonSaveText;
       closePopup(editPopup);
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      submitButton.textContent = submitButtonSaveText;
     });
 }
 
@@ -114,11 +111,13 @@ function handleAvatarFormSubmit(evt) {
     .then((data) => {
       imageProfile.style.backgroundImage = `url(${data.avatar})`;
       avatarForm.reset();
-      submitButton.textContent = submitButtonSaveText;
       closePopup(avatarPopup);
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      submitButton.textContent = submitButtonSaveText;
     });
 }
 
@@ -130,22 +129,20 @@ function handlePlaceFormSubmit(evt) {
   submitButton.textContent = submitButtonLoadingText;
   addNewCard(config, placeValue, linkValue)
     .then((newCard) => {
-      placesContainer.prepend(createCard(newCard.name, newCard.link, newCard.likes.length, false, true, newCard, deleteCard, showPicture));
+      placesContainer.prepend(createCard(cardTemplate, newCard, currentUser._id, deleteCard, showPicture));
       newPlaceForm.reset();
-      submitButton.textContent = submitButtonSaveText;
       closePopup(addPopup);
     })
     .catch((err) => {
       console.log(err);
+    })
+    .finally(() => {
+      submitButton.textContent = submitButtonSaveText;
     });
 }
 
 function showPicture(cardName, cardLink) {
-  placesContainer.addEventListener('click', function(evt) {
-    if (evt.target.classList.contains('card__image')) {
-      openPopup(imagePopup);
-    }
-  });
+  openPopup(imagePopup);
   popupImageCaption.textContent = cardName;
   popupImage.src = cardLink;
   popupImage.alt = cardName;
@@ -156,5 +153,3 @@ function showProfile() {
   jobProfile.textContent = currentUser.about;
   imageProfile.style.backgroundImage = `url(${currentUser.avatar})`;
 }
-
-export { cardTemplate };

@@ -1,14 +1,15 @@
-import { cardTemplate } from './index.js';
 import { config, deleteCardOnServer, addLikeCard, deleteLikeCard } from './api.js';
 
-function createCard(cardName, cardLink, cardLikes, isCardLiked, isCardOfCurrentUser, card, deleteFunction, showPictureFunction) {
+  function createCard(cardTemplate, card, userId, deleteFunction, showPictureFunction) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const likeButton = cardElement.querySelector('.card__like-button');
   const cardTitle = cardElement.querySelector('.card__title');
   const cardImage = cardElement.querySelector('.card__image');
   const cardLikesCount = cardElement.querySelector('.card__likes');
-  cardLikesCount.textContent = cardLikes;
+  const isCardOfCurrentUser = (card.owner._id === userId);
+  const isCardLiked = card.likes.some(user => user._id === userId);
+  cardLikesCount.textContent = card.likes.length;
   if (isCardLiked) {
     likeButton.classList.add("card__like-button_is-active");
   }
@@ -19,10 +20,10 @@ function createCard(cardName, cardLink, cardLikes, isCardLiked, isCardOfCurrentU
       likeCard(evt.target, card._id, cardLikesCount);
     }
   });
-  cardImage.addEventListener('click', () => showPictureFunction(cardName, cardLink));
-  cardTitle.textContent = cardName;
-  cardImage.src = cardLink;
-  cardImage.alt = cardName;
+  cardImage.addEventListener('click', () => showPictureFunction(card.name, card.link));
+  cardTitle.textContent = card.name;
+  cardImage.src = card.link;
+  cardImage.alt = card.name;
   if (isCardOfCurrentUser) {
     deleteButton.addEventListener('click', (evt) => {
       deleteFunction(evt.target, card._id);
